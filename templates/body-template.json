@@ -1,0 +1,25 @@
+{
+  "authorization": {
+      "parameters": {
+        "kubeConfig": "{{ kube_config }}"
+      },
+      "scheme": "Kubernetes"
+    },
+  "data": {
+      "authorizationType": "Kubeconfig",
+      "acceptUntrustedCerts": "true"
+  },
+  "name": "{{ service_endpoint_name }}",
+  "type": "kubernetes",
+  "url": "{{ api_server }}",
+  "isShared": true,
+  "serviceEndpointProjectReferences": [
+    {
+      "projectReference": {
+        "id": "{{ project_id }}",
+        "name": "{{ project_name }}"
+      },
+      "name": "{{ service_endpoint_name }}"
+    }
+  ]
+}
