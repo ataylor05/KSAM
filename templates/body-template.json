@@ -1,7 +1,7 @@
 {
   "authorization": {
       "parameters": {
-        "kubeConfig": "{{ kube_config }}"
+        "kubeConfig": "##kube_config##"
       },
       "scheme": "Kubernetes"
     },
@@ -9,17 +9,17 @@
       "authorizationType": "Kubeconfig",
       "acceptUntrustedCerts": "true"
   },
-  "name": "{{ service_endpoint_name }}",
+  "name": "##service_endpoint_name##",
   "type": "kubernetes",
-  "url": "{{ api_server }}",
+  "url": "##api_server##",
   "isShared": true,
   "serviceEndpointProjectReferences": [
     {
       "projectReference": {
-        "id": "{{ project_id }}",
-        "name": "{{ project_name }}"
+        "id": "##project_id##",
+        "name": "##project_name##"
       },
-      "name": "{{ service_endpoint_name }}"
+      "name": "##service_endpoint_name##"
     }
   ]
 }
