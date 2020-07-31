@@ -89,7 +89,7 @@ class KubeConfig():
     def createNewKubeConfig(self, namespace):
         # Copy kube config file
         new_name = (os.path.basename(self.config_path) + "-" + namespace)
-        config_path = "/home/scm/SCM/" + new_name
+        config_path = "/home/scm/" + new_name
         shutil.copyfile(self.config_path, new_name)
 
         # Create namespace
