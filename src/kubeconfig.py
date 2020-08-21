@@ -16,6 +16,7 @@ class KubeConfig():
         self.config_path = KubeConfig.config_path
         with open(self.config_path) as file:
             data = yaml.load(file, Loader=yaml.FullLoader)
+        self.certificate_authority_data = data["clusters"][0]["cluster"]["certificate-authority-data"]
         self.api_server = data["clusters"][0]["cluster"]["server"]
         self.cluster_name = data["clusters"][0]["name"]
         self.current_context = data["contexts"][0]["name"]
@@ -95,59 +96,58 @@ class KubeConfig():
 
     def _createSaRbac(self, namespace):
         try:
-            with open("templates/rbac.yaml", "r") as file:
+            shutil.copyfile("templates/rbac.yaml", "./rbac.yaml")
+            with open("./rbac.yaml", "r") as file:
                 data = file.read()
                 data = data.replace("##namespace##", namespace)
             with open("rbac.yaml", "w") as file:
                 file.write(data)
-            client = KubeConfig._k8sCoreApi(self)
+            client = KubeConfig._k8sApi(self)
             request = kubernetes.utils.create_from_yaml(client, "rbac.yaml")
             return request
         except Exception as e:
             logging.error(e)
 
-    def _readYaml(self, file):
-        with open(file, 'r') as f:
-            config_yaml = yaml.load(f)
-        return config_yaml
-
-    def _setKubeConfigContext(self, config_path, namespace, token):
-        starting_context = self.current_context
-        subprocess.call(["kubectl", "--kubeconfig", config_path, "config", "use-context", starting_context])
-        subprocess.call(["kubectl", "--kubeconfig", config_path, "config", "view", "--flatten", "--minify"])
-        subprocess.call(["kubectl", "config", "--kubeconfig", config_path, "rename-context", starting_context, namespace])
-        subprocess.call(["kubectl", "config", "--kubeconfig", config_path, "set-credentials", (namespace + "-token-user"), "--token", token])
-        subprocess.call(["kubectl", "config", "--kubeconfig", config_path, "set-context", namespace, "--user", (namespace + "-token-user")])
-        subprocess.call(["kubectl", "config", "--kubeconfig", config_path, "set-context", namespace, "--namespace", namespace])
-        subprocess.call(["kubectl", "config", "--kubeconfig", config_path, "view", "--flatten", "--minify"])
+    def _createKubeConfig(self, token, namespace):
+        try:
+            shutil.copyfile("templates/config", "./config")
+            with open("./config", "r") as file:
+                data = file.read()
+                data = data.replace("##certificate_authority_data##", self.certificate_authority_data)
+                data = data.replace("##api_server##", self.api_server)
+                data = data.replace("##cluster_name##", self.cluster_name)
+                data = data.replace("##namespace##", namespace)
+                data = data.replace("##token##", token)
+            with open("config", "w") as file:
+                file.write(data)
+        except Exception as e:
+            logging.error(e)
 
     def createNewKubeConfig(self, namespace):
-        # Copy kube config file
-        new_name = (os.path.basename(self.config_path) + "-" + namespace)
-        config_path = "/home/scm/" + new_name
-        shutil.copyfile(self.config_path, new_name)
+        try:
+            # Create namespace
+            KubeConfig._createNameSpace(self, namespace)
 
-        # Create namespace
-        KubeConfig._createNameSpace(self, namespace)
+            # Create service account
+            KubeConfig._createServiceAccount(self, namespace)
+            sa_name = namespace + "-service-account"
 
-        # Create service account
-        KubeConfig._createServiceAccount(self, namespace)
-        sa_name = namespace + "-service-account"
+            # Create service account rbac policy
+            KubeConfig._createSaRbac(self, namespace)
 
-        # Create service account rbac policy
-        KubeConfig._createSaRbac(self, namespace)
+            # Get service account token
+            token = KubeConfig._getServiceAccountToken(self, namespace)
+            
+            # Create kubeconfig
+            KubeConfig._createKubeConfig(self, token, namespace)
 
-        # Get service account token
-        token = KubeConfig._getServiceAccountToken(self, sa_name, namespace)
-        
-        # Set kube config contexts
-        KubeConfig._setKubeConfigContext(self, config_path, namespace, token)
+            with open("./config") as file:
+                config = yaml.load(file, Loader=yaml.Loader)
 
-        # Clean up
-        files = ["namespace.yaml", "service-account.yaml", "rbac.yaml"]
-        for f in files:
-            path = pathlib.Path(f)
-            if path.exists ():
-                os.remove(f)
+            # Clean up
+            os.rename("./config", ("./" + self.cluster_name + "-" + namespace + "-config"))
+            os.remove("./rbac.yaml")
 
-        return config_path
+            return config
+        except Exception as e:
+            logging.error(e)

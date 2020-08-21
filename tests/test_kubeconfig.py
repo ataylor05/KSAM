@@ -48,3 +48,4 @@ class KubeConfigTest(unittest.TestCase):
         self.kc._createServiceAccount(KubeConfigTest.namespace)
         sa = self.kc._deleteServiceAccount(KubeConfigTest.namespace)
         self.assertRegex(str(sa.metadata.resource_version), r'([0-9])')
+
