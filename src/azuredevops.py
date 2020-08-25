@@ -19,7 +19,7 @@ class AzureDevops():
             elif verb == "post":
                 response = requests.post(url=url, headers=headers, data=data, verify=False)
             elif verb == "delete":
-                response = requests.post(url=url, headers=headers, data=data, verify=False)
+                response = requests.delete(url=url, headers=headers, verify=False)
             return response.text
         except Exception as e:
             logging.error(e)
@@ -58,7 +58,7 @@ class AzureDevops():
         response = self._adoRequest(pat, url, "get")
         return response
 
-    def deleteServiceConnection(self, namespace, project_name, org, pat):
+    def deleteServiceConnection(self, namespace, project_name, endpoint_id, org, pat):
         project_id = self._adoGetProjectId(project_name, org, pat)
-        url = "https://dev.azure.com/" + org + "/" + project_name + "_apis/serviceendpoint/endpoints/{endpointId}?projectIds=" + project_id + "&api-version=6.0-preview.4"
-        return self._adoRequest(pat, url, "delete", data)
+        url = "https://dev.azure.com/" + org + "/_apis/serviceendpoint/endpoints/" + endpoint_id + "?projectIds=" + project_id + "&api-version=6.0-preview.4"
+        return self._adoRequest(pat, url, "delete")
