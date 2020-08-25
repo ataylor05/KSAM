@@ -56,7 +56,8 @@ class AzureDevops():
     def getServiceEndpointId(self, service_endpoint_name, pat, org, project):
         url = "https://dev.azure.com/" + org + "/" + project + "/_apis/serviceendpoint/endpoints?endpointNames=" + service_endpoint_name + "&api-version=6.0-preview.4"
         response = self._adoRequest(pat, url, "get")
-        return response
+        endpoint_dict = json.loads(response)
+        return endpoint_dict["value"][0]["id"]
 
     def deleteServiceConnection(self, namespace, project_name, endpoint_id, org, pat):
         project_id = self._adoGetProjectId(project_name, org, pat)

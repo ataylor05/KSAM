@@ -47,7 +47,8 @@ def deleteServiceAccount():
 
     ado = AzureDevops()
     service_endpoint_name = kc.cluster_name + "-" + namespace + "-k8s-service-account"
-    return ado.getServiceEndpointId(service_endpoint_name, pat, org, project)
+    endpoint_id = ado.getServiceEndpointId(service_endpoint_name, pat, org, project)
+    return ado.deleteServiceConnection(namespace, project, endpoint_id, org, pat)
 
 
 app.run(host='0.0.0.0', ssl_context='adhoc')
