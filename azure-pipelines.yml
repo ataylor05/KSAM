@@ -1,0 +1,11 @@
+trigger: 'master'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Get secrets'
+
+- script: echo Hello, world!
+  displayName: 'Docker build and push'
