@@ -11,7 +11,7 @@ RUN mkdir /home/ksam \
 
 COPY kubeconfig /home/ksam/.kube/config
 COPY src/*.py /home/ksam/
-COPY templates /home/ksam/
+COPY templates /home/ksam/templates/
 
 RUN chown -R ksam:ksam /home/ksam
 
