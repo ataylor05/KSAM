@@ -97,57 +97,40 @@ class KubeConfig():
     def _createSaRbac(self, namespace):
         try:
             shutil.copyfile("templates/rbac.yaml", "./rbac.yaml")
-            with open("./rbac.yaml", "r") as file:
+            with open("templates/rbac.yaml", "r") as file:
                 data = file.read()
                 data = data.replace("##namespace##", namespace)
             with open("rbac.yaml", "w") as file:
                 file.write(data)
             client = KubeConfig._k8sApi(self)
-            request = kubernetes.utils.create_from_yaml(client, "rbac.yaml")
-            return request
+            kubernetes.utils.create_from_yaml(client, "rbac.yaml")
+            return data
         except Exception as e:
             logging.error(e)
 
     def _createKubeConfig(self, token, namespace):
         try:
-            shutil.copyfile("templates/config", "./config")
-            with open("./config", "r") as file:
+            with open("templates/config", "r") as file:
                 data = file.read()
                 data = data.replace("##certificate_authority_data##", self.certificate_authority_data)
                 data = data.replace("##api_server##", self.api_server)
                 data = data.replace("##cluster_name##", self.cluster_name)
                 data = data.replace("##namespace##", namespace)
                 data = data.replace("##token##", token)
-            with open("config", "w") as file:
-                file.write(data)
+            return data
         except Exception as e:
             logging.error(e)
 
     def createNewKubeConfig(self, namespace):
         try:
-            # Create namespace
             KubeConfig._createNameSpace(self, namespace)
 
-            # Create service account
             KubeConfig._createServiceAccount(self, namespace)
-            sa_name = namespace + "-service-account"
 
-            # Create service account rbac policy
             KubeConfig._createSaRbac(self, namespace)
 
-            # Get service account token
             token = KubeConfig._getServiceAccountToken(self, namespace)
-            
-            # Create kubeconfig
-            KubeConfig._createKubeConfig(self, token, namespace)
 
-            with open("./config") as file:
-                config = yaml.load(file, Loader=yaml.Loader)
-
-            # Clean up
-            os.rename("./config", ("./" + self.cluster_name + "-" + namespace + "-config"))
-            os.remove("./rbac.yaml")
-
-            return config
+            return KubeConfig._createKubeConfig(self, token, namespace)
         except Exception as e:
             logging.error(e)

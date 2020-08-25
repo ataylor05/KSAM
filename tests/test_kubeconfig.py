@@ -1,6 +1,7 @@
 import unittest
 import os
 import time
+import kubernetes
 import src.kubeconfig
 
 class KubeConfigTest(unittest.TestCase):
@@ -49,3 +50,11 @@ class KubeConfigTest(unittest.TestCase):
         sa = self.kc._deleteServiceAccount(KubeConfigTest.namespace)
         self.assertRegex(str(sa.metadata.resource_version), r'([0-9])')
 
+    def test_create_rbac(self):
+        self.kc._createServiceAccount(KubeConfigTest.namespace)
+        rbac = self.kc._createSaRbac(KubeConfigTest.namespace)
+        self.assertRegex(str(rbac), r'rbac.authorization.k8s.io')
+
+    def test_create_kube_config(self):
+        kubeconfig = self.kc.createNewKubeConfig(KubeConfigTest.namespace)
+        self.assertTrue(len(kubeconfig) > 1000)
