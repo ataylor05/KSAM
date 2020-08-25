@@ -26,7 +26,7 @@ RUN apt-get update \
     vim \
     wget
 
-RUN pip3 install flask kubernetes pyyaml azure-keyvault
+RUN pip3 install flask kubernetes pyyaml azure.identity azure-keyvault azure-keyvault-secrets
 
 USER ksam
 WORKDIR /home/ksam
