@@ -38,11 +38,11 @@ steps:
   displayName: 'Build Docker image'
   inputs:
     script: |
-      docker build -t ataylorregistry.azurecr.io/${{ variables.Image-Name }}:${{ variables.Image-Tag }} .
+      docker build -t ataylorregistry.azurecr.io/$(Image-Name):$(Image-Tag) .
 
 - task: CmdLine@2
   displayName: 'Push Docker image'
   inputs:
     script: |
       docker login ataylorregistry.azurecr.io --username $(CR-Username) --password $(CR-Password)
-      docker push ataylorregistry.azurecr.io/${{ variables.Image-Name }}:${{ variables.Image-Tag }}
+      docker push ataylorregistry.azurecr.io/$(Image-Name):$(Image-Tag)
