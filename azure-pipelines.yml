@@ -21,6 +21,11 @@ steps:
     SecretsFilter: 'Az-Client-Id,Az-Client-Secret,Az-Tenant-Id,CR-Username,CR-Password'
     RunAsPreJob: false
 
+- task: DownloadSecureFile@1
+  displayName: 'Download kube config'
+  inputs:
+    secureFile: 'kubeconfig'
+
 - task: replacetokens@3
   displayName: 'Replace tokens in Dockerfile'
   inputs:
