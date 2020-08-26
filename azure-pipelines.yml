@@ -6,7 +6,7 @@ pool:
 
 variables:
 - name: ACR-Repo
-  value: ataylorregistry.azurecr.io
+  value: ataylorregistry
 - name: Image-Name
   value: ksam
 - name: Image-Tag
