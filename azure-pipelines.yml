@@ -5,8 +5,8 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-- name: ACR-Repo
-  value: ataylorregistry
+- name: Repo-URL
+  value: ataylorregistry.azurecr.io
 - name: Image-Name
   value: ksam
 - name: Image-Tag
@@ -38,12 +38,12 @@ steps:
   displayName: 'Build Docker image'
   inputs:
     script: |
-      echo  $(kubeconfig) > kubeconfig
-      docker build -t ataylorregistry.azurecr.io/$(Image-Name):$(Image-Tag) .
+      echo  "$(kubeconfig)" > kubeconfig
+      docker build -t $(Repo-URL)/$(Image-Name):$(Image-Tag) .
 
 - task: CmdLine@2
   displayName: 'Push Docker image'
   inputs:
     script: |
-      docker login ataylorregistry.azurecr.io --username $(CR-Username) --password $(CR-Password)
-      docker push ataylorregistry.azurecr.io/$(Image-Name):$(Image-Tag)
+      docker login $(Repo-URL) --username $(CR-Username) --password $(CR-Password)
+      docker push $(Repo-URL)/$(Image-Name):$(Image-Tag)
