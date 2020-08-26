@@ -13,6 +13,10 @@ variables:
   value: 1.0 
 
 steps:
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: 'kubeconfig'
+
 - task: AzureKeyVault@1
   displayName: 'Download secrets'
   inputs:
@@ -20,11 +24,6 @@ steps:
     KeyVaultName: 'KSAM'
     SecretsFilter: 'Az-Client-Id,Az-Client-Secret,Az-Tenant-Id,CR-Username,CR-Password'
     RunAsPreJob: false
-
-- task: DownloadSecureFile@1
-  displayName: 'Download kube config'
-  inputs:
-    secureFile: 'kubeconfig'
 
 - task: replacetokens@3
   displayName: 'Replace tokens in Dockerfile'
@@ -43,6 +42,7 @@ steps:
   displayName: 'Build Docker image'
   inputs:
     script: |
+      cp $(caCertificate.secureFilePath) .
       docker build -t ataylorregistry.azurecr.io/$(Image-Name):$(Image-Tag) .
 
 - task: CmdLine@2
