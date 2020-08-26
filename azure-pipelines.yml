@@ -38,7 +38,7 @@ steps:
   displayName: 'Build Docker image'
   inputs:
     script: |
-      echo  $(kubeconfig) kubeconfig
+      echo  $(kubeconfig) > kubeconfig
       docker build -t ataylorregistry.azurecr.io/$(Image-Name):$(Image-Tag) .
 
 - task: CmdLine@2
