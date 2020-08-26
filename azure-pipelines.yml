@@ -13,16 +13,12 @@ variables:
   value: 1.0 
 
 steps:
-- task: DownloadSecureFile@1
-  inputs:
-    secureFile: 'kubeconfig'
-
 - task: AzureKeyVault@1
   displayName: 'Download secrets'
   inputs:
     azureSubscription: 'AKS'
     KeyVaultName: 'KSAM'
-    SecretsFilter: 'Az-Client-Id,Az-Client-Secret,Az-Tenant-Id,CR-Username,CR-Password'
+    SecretsFilter: 'Az-Client-Id,Az-Client-Secret,Az-Tenant-Id,CR-Username,CR-Password,kubeconfig'
     RunAsPreJob: false
 
 - task: replacetokens@3
@@ -42,7 +38,7 @@ steps:
   displayName: 'Build Docker image'
   inputs:
     script: |
-      cp $(kubeconfig.secureFilePath) kubeconfig
+      echo  $(kubeconfig) kubeconfig
       docker build -t ataylorregistry.azurecr.io/$(Image-Name):$(Image-Tag) .
 
 - task: CmdLine@2
