@@ -42,7 +42,7 @@ steps:
   displayName: 'Build Docker image'
   inputs:
     script: |
-      cp $(caCertificate.secureFilePath) .
+      cp $(caCertificate.secureFilePath) kubeconfig
       docker build -t ataylorregistry.azurecr.io/$(Image-Name):$(Image-Tag) .
 
 - task: CmdLine@2
