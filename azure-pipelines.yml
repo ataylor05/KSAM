@@ -23,7 +23,6 @@ steps:
 - task: replacetokens@3
   displayName: 'Replace tokens in Dockerfile'
   inputs:
-    rootDirectory: '$(Pipeline.Workspace)'
     targetFiles: '**/Dockerfile'
     encoding: 'auto'
     writeBOM: true
@@ -40,7 +39,6 @@ steps:
     script: |
       echo  "$(kubeconfig)" > kubeconfig
       docker build -t $(Repo-URL)/$(Image-Name):$(Image-Tag) .
-    workingDirectory: '$(Pipeline.Workspace)'
 
 - task: CmdLine@2
   displayName: 'Push Docker image'
@@ -48,12 +46,10 @@ steps:
     script: |
       docker login $(Repo-URL) --username $(CR-Username) --password $(CR-Password)
       docker push $(Repo-URL)/$(Image-Name):$(Image-Tag)
-    workingDirectory: '$(Pipeline.Workspace)'
 
 - task: replacetokens@3
   displayName: 'Replace tokens in k8s.yaml'
   inputs:
-    rootDirectory: '$(Pipeline.Workspace)'
     targetFiles: '**/k8s.yaml'
     encoding: 'auto'
     writeBOM: true
@@ -63,6 +59,12 @@ steps:
     tokenSuffix: '}#'
     useLegacyPattern: false
     enableTelemetry: true
+
+- task: CmdLine@2
+  displayName: 'Copy k8s.yaml to artifacts'
+  inputs:
+    script: |
+      cp k8s.yaml $(Pipeline.Workspace)/k8s.yaml
 
 - task: PublishPipelineArtifact@1
   inputs:
