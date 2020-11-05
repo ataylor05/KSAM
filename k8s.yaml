@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: ksam
-        image: ataylorregistry.azurecr.io/ado-linux-agent:1.0
+        image: ataylorregistry.azurecr.io/ksam:1.0
         ports:
         - containerPort: 5000
         imagePullPolicy: Always
