@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: ksam
-        image: ataylorregistry.azurecr.io/ksam:#{Image-Tag}#
+        image: ataylorregistry.azurecr.io/ksam:#{ImageTag}#
         ports:
         - containerPort: 5000
         imagePullPolicy: Always
