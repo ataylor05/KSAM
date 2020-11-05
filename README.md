@@ -54,7 +54,6 @@ curl --location --request POST 'https://localhost:5000/createServiceAccount' \
   "type": "kubernetes",
   "url": "https://kubernetes.docker.internal:6443",
   "createdBy": {
-    "displayName": "Allan taylor",
     "url": "https://spsprodcus3.vssps.visualstudio.com/A6e4de358-5d5f-4cdb-acf6-8780ecd413f4/_apis/Identities/a89514c1-9a8e-4dfe-a522-24d0e0eb8289",
     "_links": {
       "avatar": {
@@ -62,7 +61,6 @@ curl --location --request POST 'https://localhost:5000/createServiceAccount' \
       }
     },
     "id": "a89514c1-9a8e-4dfe-a522-24d0e0eb8289",
-    "uniqueName": "allan@startmail.com",
     "imageUrl": "https://dev.azure.com/allan05/_apis/GraphProfile/MemberAvatars/msa.YmRjNWIxYzQtMGMzZS03NzZiLWE4MTktNTJjY2VkN2M4N2Q3",
     "descriptor": "msa.YmRjNWIxYzQtMGMzZS03NzZiLWE4MTktNTJjY2VkN2M4N2Q3"
   },
@@ -129,7 +127,6 @@ curl --location --request POST 'https://localhost:5000/deleteServiceAccount' \
       "type": "kubernetes",
       "url": "https://kubernetes.docker.internal:6443",
       "createdBy": {
-        "displayName": "Allan taylor",
         "url": "https://spsprodcus3.vssps.visualstudio.com/A6e4de358-5d5f-4cdb-acf6-8780ecd413f4/_apis/Identities/a89514c1-9a8e-4dfe-a522-24d0e0eb8289",
         "_links": {
           "avatar": {
@@ -137,7 +134,6 @@ curl --location --request POST 'https://localhost:5000/deleteServiceAccount' \
           }
         },
         "id": "a89514c1-9a8e-4dfe-a522-24d0e0eb8289",
-        "uniqueName": "allan@startmail.com",
         "imageUrl": "https://dev.azure.com/allan05/_apis/GraphProfile/MemberAvatars/msa.YmRjNWIxYzQtMGMzZS03NzZiLWE4MTktNTJjY2VkN2M4N2Q3",
         "descriptor": "msa.YmRjNWIxYzQtMGMzZS03NzZiLWE4MTktNTJjY2VkN2M4N2Q3"
       },
