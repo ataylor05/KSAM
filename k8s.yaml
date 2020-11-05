@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ksam
+spec:
+  selector:
+    app: ksam
+  ports:
+    - protocol: TCP
+      port: 443
+      targetPort: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ksam
+  namespace: ksam
+  labels:
+    app: ksam
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ksam
+  template:
+    metadata:
+      labels:
+        app: ksam
+    spec:
+      containers:
+      - name: ksam
+        image: ataylorregistry.azurecr.io/ado-linux-agent:1.0
+        ports:
+        - containerPort: 5000
+        imagePullPolicy: Always
+      imagePullSecrets:
+      - name: atayloracr
+      nodeSelector:
+          "beta.kubernetes.io/os": linux
